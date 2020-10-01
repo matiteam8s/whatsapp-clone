@@ -1,8 +1,9 @@
 import { Avatar } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./SidebarChat.css";
+import db from "../firebase";
 
-function SidebarChat({ addNewChat }) {
+function SidebarChat({ addNewChat, id, name }) {
   //Set state for random avatar:
   const [seed, setSeed] = useState("");
   // Each time SidebarChat component loads, useEffect gets triggered in order to make randomnumbers, then we setSeed to whatever random number was generated, and it brings the string concatenation for the API call
@@ -16,7 +17,10 @@ function SidebarChat({ addNewChat }) {
     const roomName = prompt("Please enter a name for the chat room: ");
 
     if (roomName) {
-      // do some stuff in db
+      // add a new room to firestore db:
+      db.collection("rooms").add({
+        name: roomName,
+      });
     }
   };
 
@@ -24,7 +28,8 @@ function SidebarChat({ addNewChat }) {
     <div className="sidebarChat">
       <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
       <div className="sidebarChat__info">
-        <h2>Room name</h2>
+        {/* taken from room.data.name (firebase collection for rooms) */}
+        <h2>{name}</h2>
         <p>Last message...</p>
       </div>
     </div>
