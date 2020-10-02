@@ -12,8 +12,21 @@ function SidebarChat({ addNewChat, id, name }) {
     setSeed(Math.floor(Math.random() * 100));
   }, []);
 
-  //Function to create chat when clicked:
+  const [lastmessage, setLastMessage] = useState([]);
 
+  useEffect(() => {
+    if (id) {
+      db.collection("rooms")
+        .doc(id)
+        .collection("messages")
+        .orderBy("timestamp", "desc")
+        .onSnapshot((snapshot) => {
+          setLastMessage(snapshot.docs.map((doc) => doc.data()));
+        });
+    }
+  }, [id]);
+
+  //Function to create chat when clicked:
   const createChat = () => {
     const roomName = prompt("Please enter a name for the chat room: ");
 
@@ -32,7 +45,7 @@ function SidebarChat({ addNewChat, id, name }) {
         <div className="sidebarChat__info">
           {/* taken from room.data.name (firebase collection for rooms) */}
           <h2>{name}</h2>
-          <p>Last message...</p>
+          <p>{lastmessage[0]?.message}</p>
         </div>
       </div>
     </Link>
