@@ -41,6 +41,10 @@
     
 }
 
+.sidebar__chats{
+    overflow-y: scroll;
+}
+
 .muisearch{
     color: gray;
     padding-left: 5px;

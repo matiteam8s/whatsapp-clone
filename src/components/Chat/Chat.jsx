@@ -9,8 +9,8 @@ import {
 } from "@material-ui/icons";
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
-import db from "../firebase";
-import { useStateValue } from "../StateProvider";
+import db from "../../config/firebase";
+import { useStateValue } from "../../redux/StateProvider";
 import firebase from "firebase";
 
 function Chat() {
@@ -20,7 +20,8 @@ function Chat() {
   const { roomId } = useParams();
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
-  const [{ user }, dispatch] = useStateValue();
+
+  const user = "matias";
 
   useEffect(() => {
     if (roomId) {

@@ -1,13 +1,11 @@
 import { Avatar } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./SidebarChat.css";
-import db from "../firebase";
+import db from "../../config/firebase";
 import { Link } from "react-router-dom";
 
 function SidebarChat({ addNewChat, id, name }) {
-  //Set state for random avatar:
   const [seed, setSeed] = useState("");
-  // Each time SidebarChat component loads, useEffect gets triggered in order to make randomnumbers, then we setSeed to whatever random number was generated, and it brings the string concatenation for the API call
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 100));
   }, []);

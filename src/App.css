@@ -1,6 +1,5 @@
 .app{
   height: 100vh;
-  /* Display grid y place items center centran el container hijo (en este caso app_body) horizonal y verticalmente */
   display: grid; 
   place-items: center;
   background-color: #dadbd3;

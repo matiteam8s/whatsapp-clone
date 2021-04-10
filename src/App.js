@@ -1,18 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
-import Sidebar from "./components/Sidebar";
-import Chat from "./components/Chat";
+import Sidebar from "./components/Sidebar/Sidebar";
+import Chat from "./components/Chat/Chat";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Login from "./components/Login";
-import { useStateValue } from "./StateProvider";
+import Login from "./components/Login/Login";
+import { useSelector } from "react-redux";
 
 function App() {
-  //state for the user
-  const [{ user }, dispatch] = useStateValue();
+  const user = useSelector((state) => state.auth.user);
 
   return (
     <div className="app">
-      {/* if there is no user logged in, render login screen. Otherwise, render the App. */}
       {!user ? (
         <Login />
       ) : (
