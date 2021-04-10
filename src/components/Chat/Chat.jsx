@@ -10,8 +10,8 @@ import {
 import MicIcon from "@material-ui/icons/Mic";
 import { useParams } from "react-router-dom";
 import db from "../../config/firebase";
-import { useStateValue } from "../../redux/StateProvider";
 import firebase from "firebase";
+import { useSelector } from "react-redux";
 
 function Chat() {
   const [input, setInput] = useState("");
@@ -21,7 +21,7 @@ function Chat() {
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
 
-  const user = "matias";
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (roomId) {
@@ -83,6 +83,7 @@ function Chat() {
             className={`chat__message ${
               message.name === user.displayName && "chat__receiver"
             }`}
+            key={message.name}
           >
             <span className="chat__name">{message.name}</span>
             {message.message}
