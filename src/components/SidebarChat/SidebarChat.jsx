@@ -1,16 +1,40 @@
-import { Avatar } from "@material-ui/core";
+import {
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  makeStyles,
+} from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import "./SidebarChat.css";
 import db from "../../config/firebase";
+import { useSelector } from "react-redux";
+import { bool, func, number, string } from "prop-types";
 import { Link } from "react-router-dom";
 
-function SidebarChat({ addNewChat, id, name }) {
-  const [seed, setSeed] = useState("");
-  useEffect(() => {
-    setSeed(Math.floor(Math.random() * 100));
-  }, []);
+const useStyles = makeStyles(() => ({
+  item: {
+    borderBottom: "1px solid #FAFAFA",
+    height: "70px",
+    backgroundColor: "#FFF",
+  },
+  roomName: {
+    fontWeight: "600 !important",
+  },
+}));
 
+function SidebarChat({
+  addNewChat,
+  id,
+  name,
+  index,
+  handleListItemClick,
+  selectedIndex,
+}) {
   const [lastmessage, setLastMessage] = useState([]);
+  const classes = useStyles();
+
+  const user = useSelector((state) => state.auth.user);
 
   useEffect(() => {
     if (id) {
@@ -24,28 +48,40 @@ function SidebarChat({ addNewChat, id, name }) {
     }
   }, [id]);
 
-  //Function to create chat when clicked:
   const createChat = () => {
     const roomName = prompt("Please enter a name for the chat room: ");
 
     if (roomName) {
-      // add a new room to firestore db:
       db.collection("rooms").add({
         name: roomName,
+        createdBy: user.uid,
       });
     }
   };
 
+  const initials = name?.split(" ").map((i) => i.charAt(0).toUpperCase());
+
   return !addNewChat ? (
     <Link to={`/rooms/${id}`}>
-      <div className="sidebarChat">
-        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
-        <div className="sidebarChat__info">
-          {/* taken from room.data.name (firebase collection for rooms) */}
-          <h2>{name}</h2>
-          <p>{lastmessage[0]?.message}</p>
-        </div>
-      </div>
+      <ListItem
+        button
+        disableRipple
+        selected={selectedIndex === index}
+        onClick={(event) => handleListItemClick(event, index)}
+        className={classes.item}
+      >
+        <ListItemAvatar>
+          <Avatar>
+            {initials[0]}
+            {initials[1]}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText
+          classes={{ primary: classes.roomName }}
+          primary={name}
+          secondary={lastmessage[0]?.message}
+        />
+      </ListItem>
     </Link>
   ) : (
     <div onClick={createChat} className="sidebarChat">
@@ -55,3 +91,12 @@ function SidebarChat({ addNewChat, id, name }) {
 }
 
 export default SidebarChat;
+
+SidebarChat.propTypes = {
+  name: string,
+  addNewChat: bool,
+  id: string,
+  index: number,
+  handleListItemClick: func,
+  selectedIndex: number,
+};

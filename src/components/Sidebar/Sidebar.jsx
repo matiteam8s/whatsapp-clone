@@ -7,16 +7,24 @@ import DonutLargeIcon from "@material-ui/icons/DonutLarge";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import SearchOutlined from "@material-ui/icons/SearchOutlined";
 import db from "../../config/firebase";
+import { useSelector } from "react-redux";
 
 function Sidebar() {
   const [rooms, setRooms] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [search, setSearch] = useState("");
+  const user = useSelector((state) => state.auth.user);
+
+  const filteredRooms = rooms?.filter((room) => {
+    return room.data.name.toLowerCase().includes(search.toLowerCase());
+  });
 
   useEffect(() => {
     db.collection("rooms")
-      .get()
-      .then((querySnapshot) => {
+      .where("createdBy", "==", user.uid)
+      .onSnapshot((snapshot) => {
         const rooms = [];
-        querySnapshot.forEach((doc) => {
+        snapshot.forEach((doc) => {
           rooms.push({
             id: doc.id,
             data: doc.data(),
@@ -26,7 +34,9 @@ function Sidebar() {
       });
   }, []);
 
-  const user = "matias";
+  const handleListItemClick = (event, index) => {
+    setSelectedIndex(index);
+  };
 
   return (
     <div className="sidebar">
@@ -47,13 +57,27 @@ function Sidebar() {
       <div className="sidebar__search">
         <div className="sidebar__searchContainer">
           <SearchOutlined className="muisearch" />
-          <input type="text" placeholder="Search or start new conversation" />
+          <input
+            type="text"
+            placeholder="Search or start new conversation"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+            }}
+          />
         </div>
       </div>
       <div className="sidebar__chats">
         <SidebarChat addNewChat />
-        {rooms?.map((room) => (
-          <SidebarChat key={room.id} id={room.id} name={room.data.name} />
+        {filteredRooms?.map((room, index) => (
+          <SidebarChat
+            index={index}
+            key={room.id}
+            id={room.id}
+            name={room.data.name}
+            handleListItemClick={handleListItemClick}
+            selectedIndex={selectedIndex}
+          />
         ))}
       </div>
     </div>

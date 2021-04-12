@@ -1,22 +1,30 @@
 import React from "react";
 import "./Login.css";
 import { Button } from "@material-ui/core";
-import { auth, provider } from "../../config/firebase";
+import db from "../../config/firebase";
+import { auth, googleProvider } from "../../config/firebase";
 import { useDispatch } from "react-redux";
 
 function Login() {
   const dispatch = useDispatch();
 
-  const signIn = () => {
+  const signInWithGoogle = () => {
     auth
-      .signInWithPopup(provider)
+      .signInWithPopup(googleProvider)
       .then((result) => {
+        db.collection("users")
+          .doc(result.user.uid)
+          .set({
+            id: result.user.uid,
+            displayName: result.user.displayName,
+            email: result.user.email,
+          });
         dispatch({
           type: "SET_USER",
           user: result.user,
         });
       })
-      .catch((error) => alert(error));
+      .catch((error) => console.log(error, error.code));
   };
 
   return (
@@ -29,7 +37,7 @@ function Login() {
         <div className="login__text">
           <h1>Sign in to WhatsApp</h1>
         </div>
-        <Button onClick={signIn}>Sign in With Google</Button>
+        <Button onClick={signInWithGoogle}>Sign in With Google</Button>
       </div>
     </div>
   );
