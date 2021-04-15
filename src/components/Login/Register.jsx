@@ -1,19 +1,18 @@
-import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Button,
-  makeStyles,
-  Typography,
   Divider,
   FormControl,
+  makeStyles,
   TextField,
+  Typography,
+  Button,
 } from "@material-ui/core";
-import db from "../../config/firebase";
-import { auth, googleProvider } from "../../config/firebase";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import { auth, googleProvider } from "../../config/firebase";
+import db from "../../config/firebase";
+import { faGoogle, faFacebook } from "@fortawesome/free-brands-svg-icons";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -60,7 +59,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function Login() {
+const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const classes = useStyles();
@@ -99,7 +98,7 @@ function Login() {
           alt="login_img"
         />
         <Typography variant="h6" style={{ marginBottom: "20px" }}>
-          Sign in to WhatsApp
+          Register
         </Typography>
         <div className={classes.loginButtons}>
           <Button
@@ -151,16 +150,16 @@ function Login() {
             variant="primary"
             onClick={signInWithEmailAndPassword}
           >
-            Continue
+            Create Account
           </Button>
         </form>
-        <Typography variant="p">¿Dont have an account?</Typography>
-        <Link style={{ color: "#128C7E", marginTop: "20px" }} to={"/register"}>
-          Create Account
+        <Typography variant="p">¿Already have an account?</Typography>
+        <Link style={{ color: "#128C7E", marginTop: "20px" }} to={"/login"}>
+          Login
         </Link>
       </div>
     </div>
   );
-}
+};
 
-export default Login;
+export default Register;

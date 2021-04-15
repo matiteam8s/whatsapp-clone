@@ -40,7 +40,7 @@ function Chat() {
           setMessages(snapshot.docs.map((doc) => doc.data()))
         );
     }
-  }, [roomId]);
+  }, [roomId, user.uid]);
 
   useEffect(() => {
     setSeed(Math.floor(Math.random() * 5000));

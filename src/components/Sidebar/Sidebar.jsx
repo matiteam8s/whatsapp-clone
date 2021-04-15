@@ -32,7 +32,7 @@ function Sidebar() {
         });
         setRooms(rooms);
       });
-  }, []);
+  }, [user.uid]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
