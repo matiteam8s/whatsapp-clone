@@ -53,7 +53,6 @@ const useStyles = makeStyles(() => ({
   inputs: {
     width: "90%",
     marginBottom: "10px",
-    // maxHeight: "30px",
     "& .MuiInputBase-input": {
       height: "10px",
     },
@@ -63,6 +62,7 @@ const useStyles = makeStyles(() => ({
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errors, setErrors] = useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -83,29 +83,36 @@ function Login() {
       .catch((error) => console.log(error, error.code));
   };
 
-  const signInWithFacebook = () => {
-    auth
+  const signInWithFacebook = async () => {
+    await auth
       .signInWithPopup(facebookProvider)
       .then((result) => {
         const credential = result.credential;
 
-        db.collection("users").doc(result.user.uid).set({
-          id: result.user.uid,
-          displayName: result.user.displayName,
-          email: result.user.email,
-        });
         dispatch({
           type: "SET_USER",
           user: result.user,
           accessToken: credential.accessToken,
         });
-        console.log(result);
       })
       .catch((err) => console.log(err));
   };
 
   const signInWithEmailAndPassword = () => {
-    console.log("signin in with email and password...");
+    auth
+      .signInWithEmailAndPassword(email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+
+        dispatch({
+          type: "SET_USER",
+          user: user,
+        });
+      })
+      .catch((error) => {
+        var errorMessage = error.message;
+        setErrors(errorMessage);
+      });
   };
 
   return (
@@ -140,6 +147,8 @@ function Login() {
         <form autoComplete="off" style={{ margin: "20px 0" }}>
           <FormControl style={{ display: "block" }}>
             <TextField
+              error={errors !== null}
+              helperText={errors}
               className={classes.inputs}
               variant="outlined"
               value={email}
