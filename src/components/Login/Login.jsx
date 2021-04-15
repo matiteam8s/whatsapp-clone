@@ -7,7 +7,7 @@ import {
   FormControl,
   TextField,
 } from "@material-ui/core";
-import db from "../../config/firebase";
+import db, { facebookProvider } from "../../config/firebase";
 import { auth, googleProvider } from "../../config/firebase";
 import { useDispatch } from "react-redux";
 
@@ -84,7 +84,24 @@ function Login() {
   };
 
   const signInWithFacebook = () => {
-    console.log("signin in with facebook...");
+    auth
+      .signInWithPopup(facebookProvider)
+      .then((result) => {
+        const credential = result.credential;
+
+        db.collection("users").doc(result.user.uid).set({
+          id: result.user.uid,
+          displayName: result.user.displayName,
+          email: result.user.email,
+        });
+        dispatch({
+          type: "SET_USER",
+          user: result.user,
+          accessToken: credential.accessToken,
+        });
+        console.log(result);
+      })
+      .catch((err) => console.log(err));
   };
 
   const signInWithEmailAndPassword = () => {
@@ -128,6 +145,7 @@ function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               name="email"
+              type="email"
               placeholder="Enter your email"
             />
           </FormControl>
@@ -135,6 +153,7 @@ function Login() {
             <TextField
               className={classes.inputs}
               variant="outlined"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               name="password"

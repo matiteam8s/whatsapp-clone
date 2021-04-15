@@ -13,15 +13,30 @@ function Sidebar() {
   const [rooms, setRooms] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [search, setSearch] = useState("");
+  const [accessToken, setAccessToken] = useState("");
   const user = useSelector((state) => state.auth.user);
 
   const filteredRooms = rooms?.filter((room) => {
     return room.data.name.toLowerCase().includes(search.toLowerCase());
   });
 
+  const provider = user?.user.providerData[0]?.providerId;
+
+  useEffect(() => {
+    setAccessToken(user.accessToken);
+  }, [user]);
+
+  const getProfilePicture = () => {
+    if (provider === "facebook.com") {
+      return `${user.user.photoURL}?access_token=${accessToken}`;
+    } else {
+      return user.user.photoURL;
+    }
+  };
+
   useEffect(() => {
     db.collection("rooms")
-      .where("createdBy", "==", user.uid)
+      .where("createdBy", "==", user.user.uid)
       .onSnapshot((snapshot) => {
         const rooms = [];
         snapshot.forEach((doc) => {
@@ -32,7 +47,7 @@ function Sidebar() {
         });
         setRooms(rooms);
       });
-  }, [user.uid]);
+  }, [user.user.uid]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -41,7 +56,7 @@ function Sidebar() {
   return (
     <div className="sidebar">
       <div className="sidebar__header">
-        <Avatar src={user?.photoURL} />
+        <Avatar src={getProfilePicture()} />
         <div className="sidebar__headerRight">
           <IconButton>
             <DonutLargeIcon />

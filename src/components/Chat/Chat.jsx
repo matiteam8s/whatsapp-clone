@@ -20,7 +20,7 @@ function Chat() {
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
 
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user.user);
 
   useEffect(() => {
     if (roomId) {

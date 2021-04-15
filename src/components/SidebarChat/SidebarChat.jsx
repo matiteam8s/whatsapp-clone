@@ -54,7 +54,7 @@ function SidebarChat({
     if (roomName) {
       db.collection("rooms").add({
         name: roomName,
-        createdBy: user.uid,
+        createdBy: user.user.uid,
       });
     }
   };

@@ -127,6 +127,7 @@ const Register = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               name="email"
+              type="email"
               placeholder="Enter your email"
             />
           </FormControl>
@@ -137,6 +138,7 @@ const Register = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               name="password"
+              type="password"
               placeholder="Enter your password"
             />
           </FormControl>

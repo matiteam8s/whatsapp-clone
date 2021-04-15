@@ -9,7 +9,10 @@ export default function (state = initialState, action) {
     case SET_USER:
       return {
         ...state,
-        user: action.user,
+        user: {
+          user: action.user,
+          accessToken: action.accessToken,
+        },
       };
     default:
       return state;
